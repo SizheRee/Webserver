@@ -4,11 +4,14 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <Windows.h>
 
 using namespace std;
 
 #define BUFFER_SIZE 1000
 #define HOST "127.0.0.1"
+
+DWORD WINAPI Message_thread(LPVOID lvParamter);
 
 int WinscokStartup(void){
 	WSADATA  wsaData;
@@ -29,10 +32,11 @@ int WinscokStartup(void){
 }
 
 struct Message{
+	string data;
 	string path;
 	string type;
 	int method;
-	int clientSocket;
+	SOCKET clientSocket;
 	int messageid;
 };
 
@@ -40,8 +44,8 @@ string ROOT;
 string LISTEN_ADDR;
 string LISTEN_PORT;
 
-void Message_Analysis(const char *s, struct Message &m);
-void Send_Message(SOCKET & socketClient, struct Message &m);
+void Message_Analysis(Message &m);
+void Send_Message(Message &m);
 
 void ServerStartup(){
 	int res;
@@ -90,35 +94,47 @@ void ServerStartup(){
 			printf("Accept Failed\n");
 			continue;
 		}else{
+			Message * mesp = new Message;
+			mesp->clientSocket=socketClient;
+
 			char buffer[BUFFER_SIZE];
 			memset(buffer, 0, sizeof(buffer));
-
-			Message m;
 			if(recv(socketClient, buffer, BUFFER_SIZE, 0)==SOCKET_ERROR){
 				printf("Recive Failed!\n");
 			}else{
-				Message_Analysis(buffer, m);
-				printf("Recive:\n%s", buffer);
+				mesp->data = string(buffer);
+				DWORD threadid;
+				HANDLE mThread = CreateThread(NULL, 0, Message_thread, (LPVOID) mesp, 0, &threadid);  //创建线程01
+				CloseHandle(mThread);
 			}
-
-			Send_Message(socketClient, m);
-
-			closesocket(socketClient);
 		}
-		
 	}
 }
 
-void Message_Analysis(const char *s, struct Message &m){
+DWORD WINAPI Message_thread(LPVOID lvParamter){
+	DWORD curid = GetCurrentThreadId();
+
+	printf("current threadid:%lu\n", curid);
+
+	Message &mes=*(Message *)lvParamter;
+	Message_Analysis(mes);
+	Send_Message(mes);
+	closesocket(mes.clientSocket);
+	return 233;
+}
+
+void Message_Analysis(struct Message &m){
 	char method[5], obj[100], protocal[10];
 
-	sscanf(s, "%s %s %s", method, obj, protocal);
+	// printf("Recive:\n%s", m.data.c_str());
+
+	sscanf(m.data.c_str(), "%s %s %s", method, obj, protocal);
+
 	if(strcmp(method, "GET")==0) m.method=0;
 
 	m.path=ROOT+string(obj);
-
 	string url(obj),postfix;
-	for(int i=url.find(".")+1;i<url.length();i++){
+	for(unsigned i=url.find(".")+1;i<url.length();i++){
 		postfix+=url[i];
 	}
 	
@@ -131,7 +147,8 @@ void Message_Analysis(const char *s, struct Message &m){
 	return;
 }
 
-void Send_Message(SOCKET & socketClient, struct Message &m){
+void Send_Message(Message &m){
+
     char buffer[BUFFER_SIZE];
     memset(buffer, 0, sizeof(buffer));
 
@@ -151,9 +168,9 @@ void Send_Message(SOCKET & socketClient, struct Message &m){
     sprintf(buffer+strlen(buffer), "Cache-Control: no-cache\n");
     strcat(buffer, "\n");
 
-    printf("SEND:\n%s", buffer);
+    // printf("SEND:\n%s", buffer);
 
-    if(send(socketClient, buffer, strlen(buffer), 0)==SOCKET_ERROR){
+    if(send(m.clientSocket, buffer, strlen(buffer), 0)==SOCKET_ERROR){
     	printf("Send buffer Failed\n");
     }
 
@@ -164,7 +181,7 @@ void Send_Message(SOCKET & socketClient, struct Message &m){
 	while(fileremain>0){
 		int sendwindow = sizeof(buffer) < fileremain ? sizeof(buffer) : fileremain;
 		in.read(buffer, sizeof(buffer));
-		if(send(socketClient, buffer, sendwindow, 0)==SOCKET_ERROR){
+		if(send(m.clientSocket, buffer, sendwindow, 0)==SOCKET_ERROR){
 			printf("Send buffer Failed\n");
 		}
 		fileremain -= sizeof(buffer);
