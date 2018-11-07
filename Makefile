@@ -1,4 +1,4 @@
-object = Server.o
+object = Server_thread.o main.o
 ldlib = -lwsock32
 # CPPFLAGS = -static
 
