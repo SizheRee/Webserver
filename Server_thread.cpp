@@ -109,7 +109,7 @@ void HTTPServer::Main_Loop(void){
 			mesp->id = messageid++;
 			mesp->myserver = this;
 			mesp->client_info = client_info;
-			
+
 			//buffer存储报文
 			char buffer[BUFFER_SIZE];
 			memset(buffer, 0, sizeof(buffer));
@@ -157,7 +157,7 @@ void HTTPServer::Message_Analysis(Message &mes){
 	printf("请求行: %s %s %s\n", method, obj, protocal);
 	//如果方法是POST 得到两个字段username passwd保存在message里
 	if(strcmp(method, "POST")==0){
-		printf("POST:\n%s", mes.data.c_str());
+		// printf("POST:\n%s", mes.data.c_str());
 		mes.method="POST";	
 		string username;
 		mes.postinfo.username.clear();
@@ -166,7 +166,7 @@ void HTTPServer::Message_Analysis(Message &mes){
 		while(mes.data[pos]!='&'&&mes.data[pos]!='\n'&&mes.data[pos]) mes.postinfo.username+=mes.data[pos++];
 		pos=mes.data.find("passwd=")+sizeof("passwd");
 		while(mes.data[pos]!='&'&&mes.data[pos]!='\n'&&mes.data[pos]) mes.postinfo.passwd+=mes.data[pos++];
-		// cout << "POST RECIVE USERNAME" << mes.postinfo.username << "PASSWD" << mes.postinfo.passwd;
+		cout << "POST RECIVE USERNAME:" << mes.postinfo.username << "\tPASSWD:" << mes.postinfo.passwd << endl;
 		// printf("POST RECIVE: username:%s passwd:%s\n", mes.postinfo.username.c_str(), mes.postinfo.passwd.c_str());
 		return;
 	} 

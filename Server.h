@@ -12,15 +12,22 @@
 using namespace std;
 
 class HTTPServer;
-
+/**
+ * 报文数据结构Message
+ * 注意到为了方便访问存储了客户端对象信息
+ * 存储了socket连接
+ * HTTPServer 指针
+ * 存储POST信息
+ * ID
+ */
 struct Message{
-	string data;
-	string path;
-	string filetype;
-	string method;
-	SOCKET clientSocket;
-	SOCKADDR_IN client_info;
-	HTTPServer * myserver;
+	string data; 	//报文头内容
+	string path;	//GET 对象路径
+	string filetype;	//GET 对象类型
+	string method;	// 请求方法 GET | POST
+	SOCKET clientSocket;	// socket连接
+	SOCKADDR_IN client_info;	//客户端信息
+	HTTPServer * myserver; 
 	struct{
 		string username;
 		string passwd;
@@ -35,19 +42,19 @@ public:
 	virtual int WinsockStartup();
 	virtual int ServerStartup();
 	virtual int ListenStartup();
-	virtual void Main_Loop(void);
+	virtual void Main_Loop(void); 		//主循环
 protected:
-	void Message_Analysis(Message &m);
-	void Send_Message(const Message &m);
-	void Show_ClientInfo(const Message & m);
-	static DWORD WINAPI Message_thread(LPVOID lvParamter);
+	void Message_Analysis(Message &m); 		//报文分析
+	void Send_Message(const Message &m); 	//发送新报文，传入报文用于分析
+	void Show_ClientInfo(const Message & m);	//显示客户端信息
+	static DWORD WINAPI Message_thread(LPVOID lvParamter); 	//静态定义，否则此函数会新增this参数从而无法被API调用
 private:
-	SOCKET srvSocket;
-	sockaddr_in serveraddr;
-	int nAddrLen;
-	string ROOT;
-	string LISTEN_ADDR;
-	string LISTEN_PORT;
+	SOCKET srvSocket; 	//服务器主socket
+	sockaddr_in serveraddr; 	//没用
+	int nAddrLen; 		
+	string ROOT;		//虚拟地址
+	string LISTEN_ADDR;	//监听地址
+	string LISTEN_PORT;	//监听端口
 };
 
 #endif
