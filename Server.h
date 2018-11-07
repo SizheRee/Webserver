@@ -21,6 +21,10 @@ struct Message{
 	SOCKET clientSocket;
 	SOCKADDR_IN client_info;
 	HTTPServer * myserver;
+	struct{
+		string username;
+		string passwd;
+	}postinfo;
 	int id;
 };
 

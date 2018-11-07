@@ -1,4 +1,4 @@
-object = Server_thread.o main.o
+object = Server_thread.o main.o util.o
 ldlib = -lwsock32
 # CPPFLAGS = -static
 
@@ -13,5 +13,5 @@ Webserver:	$(object)
 	start cmd /c "Webserver < input.txt"
 
 %.o : %.cpp
-	@echo 正在编译源文件 $<
+	@echo 正在编译源文件...  "$<"
 	g++ -c  $(CPPFLAGS) $< -o $@
