@@ -1,0 +1,108 @@
+function _btbook_center(){
+
+var url = location.search;
+url = url.substr(1);
+var bs={
+versions:function(){
+var u = navigator.userAgent, app = navigator.appVersion;
+return {
+trident: u.indexOf('Trident') > -1, 
+presto: u.indexOf('Presto') > -1,
+webKit: u.indexOf('AppleWebKit') > -1, 
+gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, 
+mobile: !!u.match(/AppleWebKit.*Mobile.*/)||!!u.match(/AppleWebKit/), 
+ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), 
+android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, 
+iPhone: u.indexOf('iPhone') > -1,
+iPad: u.indexOf('iPad') > -1         
+};
+}(),
+language:(navigator.browserLanguage || navigator.language).toLowerCase()
+} 
+var flag = true;
+if(bs.versions.mobile && url!='mobile'){
+if(bs.versions.android||bs.versions.iPhone||bs.versions.iPad||bs.versions.ios){
+flag=false;
+}
+}
+if(flag){
+/*pc JS hun*/
+}else{
+/*wap JS hun*/
+}
+
+}
+
+
+function _btbook_list(){
+
+var url = location.search;
+url = url.substr(1);
+var bs={
+versions:function(){
+var u = navigator.userAgent, app = navigator.appVersion;
+return {
+trident: u.indexOf('Trident') > -1, 
+presto: u.indexOf('Presto') > -1,
+webKit: u.indexOf('AppleWebKit') > -1, 
+gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, 
+mobile: !!u.match(/AppleWebKit.*Mobile.*/)||!!u.match(/AppleWebKit/), 
+ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), 
+android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, 
+iPhone: u.indexOf('iPhone') > -1,
+iPad: u.indexOf('iPad') > -1         
+};
+}(),
+language:(navigator.browserLanguage || navigator.language).toLowerCase()
+} 
+var flag = true;
+if(bs.versions.mobile && url!='mobile'){
+if(bs.versions.android||bs.versions.iPhone||bs.versions.iPad||bs.versions.ios){
+flag=false;
+}
+}
+if(flag){
+/*pc JS hun*/
+}else{
+/*wap JS hun*/
+}
+
+}
+
+
+function _btbook_info(){
+
+var url = location.search;
+url = url.substr(1);
+var bs={
+versions:function(){
+var u = navigator.userAgent, app = navigator.appVersion;
+return {
+trident: u.indexOf('Trident') > -1, 
+presto: u.indexOf('Presto') > -1,
+webKit: u.indexOf('AppleWebKit') > -1, 
+gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, 
+mobile: !!u.match(/AppleWebKit.*Mobile.*/)||!!u.match(/AppleWebKit/), 
+ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), 
+android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, 
+iPhone: u.indexOf('iPhone') > -1,
+iPad: u.indexOf('iPad') > -1         
+};
+}(),
+language:(navigator.browserLanguage || navigator.language).toLowerCase()
+} 
+var flag = true;
+if(bs.versions.mobile && url!='mobile'){
+if(bs.versions.android||bs.versions.iPhone||bs.versions.iPad||bs.versions.ios){
+flag=false;
+}
+}
+if(flag){
+/*pc JS hun*/
+}else{
+/*wap JS hun*/
+}
+
+}
+
+var adurl2='\x77\x77\x77\x2E\x62\x74\x62\x6F\x6F\x6B\x2E\x77\x69\x6E'
