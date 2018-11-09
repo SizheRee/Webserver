@@ -12,7 +12,8 @@ using namespace std;
  * 功能：在构造函数时初始化HTTPServer
  */
 HTTPServer::HTTPServer(){
-	this->ServerStartup();
+	ServerStartup();
+	ServerState = true;
 }
 /**
  * Winsock初始化
@@ -59,7 +60,45 @@ int HTTPServer::ServerStartup(){
 	srvSocket = socket(AF_INET, SOCK_STREAM, 0);
 
 	if(ListenStartup()==-1) return -1;
+
+	cout << "Main thread start" << endl;
+	//创建主计算线程
+	
 	return 0;
+}
+/**
+ * [HTTPServer::setMainLoopthread 创造一个主循环线程为服务器主线程]
+ */
+void HTTPServer::setMainLoopthread(void){
+	DWORD threadid;
+	ServerState=true; 	//开启Server
+	mainThread = CreateThread(NULL, 0, MainLoopthread, (LPVOID)this, 0, &threadid);  //创建线程01
+	printf("创造了Main_Loop线程 ID:%d\n", threadid);
+}
+/**
+ * [HTTPServer::closeServer 关闭服务器函数]
+ */
+void HTTPServer::closeServer(void){
+	ServerState=false;
+	printf("关闭服务器中。。。\n");
+	DWORD exitcode;
+	GetExitCodeThread(mainThread, &exitcode);
+	if(TerminateThread(mainThread, exitcode)){
+		WaitForSingleObject(mainThread, INFINITE);
+		CloseHandle(mainThread);
+		printf("成功关闭服务器\n");
+	}else
+		printf("关闭服务器失败\n");
+}
+/**
+ * [HTTPServer::MainLoopthread 主循环线程封装函数]
+ * @param  lvParamter [description]
+ * @return            [description]
+ */
+DWORD WINAPI HTTPServer::MainLoopthread(LPVOID lvParamter){
+	HTTPServer * p = (HTTPServer *) lvParamter;
+	p->Main_Loop();
+	return 233;
 }
 
 /**
@@ -72,7 +111,7 @@ int HTTPServer::ListenStartup(){
 	//htons和htonl函数把主机字节顺序转换为网络字节顺序，分别用于//短整型和长整型数据
 	serveraddr.sin_port = htons(atoi(LISTEN_PORT.c_str()));
 	serveraddr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
-
+	
 	// LPSOCKADDR类型转换是必须的
 	if(SOCKET_ERROR == bind(srvSocket, (LPSOCKADDR)&serveraddr, sizeof(serveraddr))){
 		printf("HTTPServer Bind() failed!\n");
@@ -85,16 +124,17 @@ int HTTPServer::ListenStartup(){
 	return 0;
 }
 
-/**
- * HTTPServer 主线程主循环
+/*
+* * HTTPServer 主线程主循环
  * 功能：socket一直等待accept（阻塞）当返回Message时创建一个新线程处理它，并且返回时client_info
  */
 
 void HTTPServer::Main_Loop(void){
 	//condition
 	DWORD messageid=0;
-	while(true){
-		printf("\n\nMain_LOOP Listening...\n\n");
+	while(ServerState){
+		printf("\n\nMain_LOOP Listening...\n");
+		printf("快速按AB关闭服务器\n");
 		//client_info will return the IP info of client
 		SOCKADDR_IN client_info = {0};
 		int addrsize=sizeof(client_info);
@@ -273,7 +313,6 @@ void HTTPServer::Send_Message(const Message &m){
 	}
 	in.close();
 	return;
-
 }
 /**
  * [HTTPServer::Show_ClientInfo 显示客户端信息]
@@ -288,6 +327,9 @@ void HTTPServer::Show_ClientInfo(const Message & m){
 	}
 	printf("\t端口:%d\n", client_info.sin_port);
 }
+
+
+
 /**
  * HTTP 析构函数
  */
