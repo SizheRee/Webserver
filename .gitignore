@@ -1,5 +1,5 @@
-/HttpServer
-/oldversion
-/QTtest
-/threadtest
+/HttpServer/
+/oldversion/
+/QTtest/
+/threadtest/
 /*.o
