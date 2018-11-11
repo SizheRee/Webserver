@@ -6,6 +6,7 @@ echo  %arg% > input2.txt
 set arg=127.0.0.1
 set "arg=%arg% 5051"
 set "arg=%arg% %CD:\=/%/Source"
+set "arg=%arg% start"
 
 echo %arg% >> input2.txt
 

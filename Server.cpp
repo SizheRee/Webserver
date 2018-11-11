@@ -49,21 +49,17 @@ int HTTPServer::ServerStartup(){
 	printf("%s\n", LISTEN_PORT.c_str());
 	printf("请输入虚拟路径\n");
 	cin >> ROOT;
-	printf("%s\n", ROOT.c_str());
+	printf("%s\n\n", ROOT.c_str());
 
 	if(WinsockStartup()==-1){
-		printf("WinsockStartup() Failed!\n");
+		printf("Winsock初始化失败!\n");
 		return -1;
 	}
-	printf("WinsockStartup() Succeed!\n");
+	printf("Winsock初始化成功\n");
 	//创建socket
 	srvSocket = socket(AF_INET, SOCK_STREAM, 0);
 
 	if(ListenStartup()==-1) return -1;
-
-	cout << "Main thread start" << endl;
-	//创建主计算线程
-	
 	return 0;
 }
 /**
@@ -156,7 +152,11 @@ void HTTPServer::Main_Loop(void){
 
 			if(recv(socketClient, buffer, BUFFER_SIZE, 0)==SOCKET_ERROR){
 				printf("Recive message failed!\n");
-			}else{
+			}else if(!buffer[0]){
+				//说明没有接受到字符，浏览器通知关闭
+				printf("客户端已经断开\n");
+			}
+			else{
 				mesp->data = string(buffer);
 				DWORD threadid;
 				HANDLE mThread = CreateThread(NULL, 0, Message_thread, (LPVOID)mesp, 0, &threadid);  //创建线程01
@@ -192,6 +192,7 @@ DWORD WINAPI HTTPServer::Message_thread(LPVOID lvParamter){
 void HTTPServer::Message_Analysis(Message &mes){
 
 	char method[5], obj[100], protocal[10];
+	// printf("RECIVE:\n%s\n", mes.data.c_str());
 	//得到方法，对象，协议类型
 	sscanf(mes.data.c_str(), "%s %s %s", method, obj, protocal);
 	printf("请求行: %s %s %s\n", method, obj, protocal);
