@@ -2,24 +2,25 @@
 #include <iostream>
 
 /**
- * [main ä¸»å‡½æ•°]
- åŠŸèƒ½ å®ç°HTTPServerå¼€å¯æŒ‡ä»¤æœåŠ¡
- å½“å¼€å¯åå¿«é€ŸæŒ‰ä¸‹abé”®å¯ä»¥å…³é—­æœåŠ¡å™¨
+ * [main Ö÷º¯Êı]
+ * ¹¹ÔìHTTPServer£¬ ÔÚ¹¹Ôìº¯ÊıÖĞ×Ô¶¯³õÊ¼»¯¡£
+ * ½øÈëÒ»¸öÃ¦µÈ´ı£¬µ±°´ÏÂstartÊ±¿ªÆôHTTPServerÖ÷Ïß³ÌÑ­»·
+ * ½øÈëÒ»¸öÃ¦µÈ´ı£¬µ±°´ÏÂABÊ±½áÊøHTTPServerÖ÷Ïß³Ì
  */
 int main(int argc, char *argv[]){
 	HTTPServer server;
 	string s;
-	//å¼€å¯æŒ‡ä»¤
+	
 	while(true){
-		cout << "è¯·è¾“å…¥startå¼€å¯æœåŠ¡" << endl;
+		cout << "ÊäÈëÖ¸Áîstart¿ªÆôHTTPServer·şÎñ" << endl;
 		cin >> s;
 		if(s=="start") break;
-		else cout << "å¯åŠ¨æŒ‡ä»¤é”™è¯¯" << endl;
+		else cout << "³É¹¦¿ªÆôHTTP·şÎñ" << endl;
 	}
 
 	server.setMainLoopthread();
 	while(1){
-		//æŒ‰ä¸‹ABå…³é—­æœåŠ¡å™¨
+		//¿ìËÙ°´ÏÂAB
 		if(GetKeyState('A') & 0x8000/*check if high-order bit is set (1 << 15)*/)
 		{
 			Sleep(50);
