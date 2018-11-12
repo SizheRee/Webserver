@@ -326,7 +326,7 @@ void HTTPServer::Show_ClientInfo(const Message & m){
 	for(int i=0;i<4;i++){
 		printf(i?".%d":"%d", *(client_ipp+i));
 	}
-	printf("\t端口:%d\n", client_info.sin_port);
+	printf("\t端口:%d\n", htons(client_info.sin_port));//重新转换为小端序
 }
 
 
